@@ -1,6 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Api\V1\Controllers\AuthController;
+use App\Http\Api\V1\Controllers\RegistrationController;
+use App\Http\Api\V1\Controllers\ResetPasswordController;
+use App\Http\Api\V1\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +17,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('', function () {
-    return response(null, 204);
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('', [AuthController::class, 'login']);
+    Route::delete('', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+    Route::prefix('registration')->group(function () {
+        Route::post('', [RegistrationController::class, 'registration']);
+    });
+
+    Route::prefix('password-recovery')->group(function () {
+        Route::post('', [ResetPasswordController::class, 'sendResetLink']);
+        Route::post('confirm', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
+    });
 });
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('users')->group(function () {
+        Route::get('', [UserController::class, 'show']);
+        Route::post('', [UserController::class, 'update']);
+    });
+});
