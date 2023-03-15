@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('user_id')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('question_group_id')->constrained('question_groups')->cascadeOnDelete();
             $table->json('answers');
             $table->boolean('is_success')->default(false);

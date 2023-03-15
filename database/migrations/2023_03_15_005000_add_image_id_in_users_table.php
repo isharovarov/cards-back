@@ -10,12 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('question_groups', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+        Schema::table('users', function (Blueprint $table) {
             $table->foreignId('image_id')->nullable()->constrained('images')->nullOnDelete();
-            $table->string('text', 500)->nullable();
-            $table->timestamps();
         });
     }
 
@@ -24,6 +20,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_groups');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('image_id');
+        });
     }
 };
